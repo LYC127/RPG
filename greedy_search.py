@@ -300,3 +300,227 @@
                 )
         else:
             return input_ids
+
+
+
+
+keyword_list = ['continue', 'await', 'as', 'try', 'or', 'else', 'assert', 'True', 'except', 'test', 'raise', 'return', 'break', 'while', 'nonlocal', 'if', 'async', 'pass', 'global', 'finally', 'elif', 'and', 'import', 'not', 'from', 'is', 'lambda', 'yield', 'for', 'with', 'None', 'False', 'class', 'del', 'in', 'def', 'print', 'assert']
+restrict_string = ['assert', 'if', 'elif', 'else', 'print', 'def', "#", "try", "while", "import", "from", "for", "class", "#", "'''", '"""', '\n']
+
+
+def convert_ids_to_type(input_ids, string, type, type_index, idx):
+    j = -1
+    for i in range(0, len(input_ids[idx])):
+        if j >= i:
+            continue
+        if '"""' in string[idx][i]:
+            j = i + 1
+            while j <= len(input_ids[idx]) - 1 and (('"""' not in string[idx][j]) and not ('""' in string[idx][j-1] and '"' in string[idx][j]) and not ('"' in string[idx][j-1] and '""' in string[idx][j])):
+                j += 1
+            if j != len(input_ids[idx]):
+                type[idx].append("COMMNET")
+                type_index[idx].append(j)
+            else:
+                type[idx].append("COMMNET")
+                type_index[idx].append(j-1)
+            continue
+        if i < len(input_ids[idx]) - 1 and (('""' in string[idx][i] and '"' in string[idx][i+1]) or ('"' in string[idx][i] and '""' in string[idx][i+1])):
+            j = i + 2
+            while j <= len(input_ids[idx]) - 1 and (('"""' not in string[idx][j]) and not ('""' in string[idx][j-1] and '"' in string[idx][j]) and not ('"' in string[idx][j-1] and '""' in string[idx][j])):
+                j += 1
+            if j != len(input_ids[idx]):
+                type[idx].append("COMMNET")
+                type_index[idx].append(j)
+            else:
+                type[idx].append("COMMNET")
+                type_index[idx].append(j-1)
+            continue
+        if "'''" in string[idx][i]:
+            j = i + 1
+            while j <= len(input_ids[idx]) - 1 and "'''" not in string[idx][j]:
+                j += 1
+            if j != len(input_ids[idx]):
+                type[idx].append("COMMNET")
+                type_index[idx].append(j)
+            else:
+                type[idx].append("COMMNET")
+                type_index[idx].append(j-1)
+            continue
+        if "#" in string[idx][i]:
+            j = i + 1
+            while j <= len(input_ids[idx]) - 1 and "\n" not in string[idx][j]:
+                j += 1
+            type[idx].append("COMMNET")
+            type_index[idx].append(j-1)
+            if j != len(input_ids[idx]):
+                type[idx].append(string[idx][j])
+                type_index[idx].append(j)
+            continue
+        if "[" in string[idx][i]:
+            index_0 = string[idx][i].find("'")
+            index_1 = string[idx][i].find('"')
+            index_2 = string[idx][i].find("[")
+            if ((index_0 == -1 and index_1 == -1) or (index_2 < index_0 and index_0 != -1) or (index_2 < index_1 and index_1 != -1)) and "]" not in string[idx][i]:
+                j = i + 1
+                while j <= len(input_ids[idx]) - 1 and "]" not in string[idx][j]:
+                    j += 1
+                if j != len(input_ids[idx]):
+                    type[idx].append("LIST")
+                    type_index[idx].append(j)
+                else:
+                    type[idx].append("LIST")
+                    type_index[idx].append(j-1)
+            elif index_0 != -1 and index_2 > index_0 and "]" not in string[idx][i]:
+                j = i + 1
+                while j <= len(input_ids[idx]) - 1 and "'" not in string[idx][j]:
+                    j += 1
+                if j != len(input_ids[idx]):
+                    type[idx].append("STRING")
+                    type_index[idx].append(j)
+                else:
+                    type[idx].append("STRING")
+                    type_index[idx].append(j-1)
+            elif index_1 != -1 and index_2 > index_1 and "]" not in string[idx][i]:
+                j = i + 1
+                while j <= len(input_ids[idx]) - 1 and '"' not in string[idx][j]:
+                    j += 1
+                if j != len(input_ids[idx]):
+                    type[idx].append("STRING")
+                    type_index[idx].append(j)
+                else:
+                    type[idx].append("STRING")
+                    type_index[idx].append(j-1)
+            elif "]" in string[idx][i]:
+                type[idx].append("LIST")
+                type_index[idx].append(i)
+            continue
+
+        if "'" in string[idx][i] and "'''" not in string[idx][i]:
+            if string[idx][i].count("'") != 2:
+                j = i + 1
+                while j <= len(input_ids[idx]) - 1 and "'" not in string[idx][j]:
+                    j += 1
+                if j != len(input_ids[idx]):
+                    type[idx].append("STRING")
+                    type_index[idx].append(j)
+                else:
+                    type[idx].append("STRING")
+                    type_index[idx].append(j-1)    
+            else:
+                type[idx].append("STRING")
+                type_index[idx].append(i)
+            continue
+        if '"' in string[idx][i] and '"""' not in string[idx][i]:
+            if string[idx][i].count('"') != 2:
+                j = i + 1
+                while j <= len(input_ids[idx]) - 1 and '"' not in string[idx][j]:
+                    j += 1
+                if j != len(input_ids[idx]):
+                    type[idx].append("STRING")
+                    type_index[idx].append(j)
+                else:
+                    type[idx].append("STRING")
+                    type_index[idx].append(j-1)    
+            else:
+                type[idx].append("STRING")
+                type_index[idx].append(i)
+            continue
+
+        if not re.match(r'^▁?[a-zA-Z_0-9]+$', string[idx][i]):
+            type[idx].append(string[idx][i])
+            type_index[idx].append(i)
+        elif string[idx][i].replace("▁","") in keyword_list:
+            j = i + 1
+            while j <= len(input_ids[idx]) - 1 and re.match(r'^[a-zA-Z_0-9]+$', string[idx][j]):
+                j += 1
+            if j == i + 1:
+                type[idx].append(string[idx][i])
+                type_index[idx].append(i)
+            else:
+                type[idx].append("NAME")
+                type_index[idx].append(j-1)
+            j -= 1
+
+        elif re.match(r'^▁?[a-zA-Z_][a-zA-Z_0-9]*$', string[idx][i]):
+            j = i + 1
+            while j <= len(input_ids[idx]) - 1 and re.match(r'^[a-zA-Z_0-9]+$', string[idx][j]):
+                j += 1
+            type[idx].append("NAME")
+            type_index[idx].append(j-1)
+            j -= 1
+            continue
+
+        if re.match(r'^▁?[0-9]+$', string[idx][i]):
+            j = i + 1
+            while j <= len(input_ids[idx]) - 1 and re.match(r'^[0-9]+$', string[idx][j]):
+                j += 1
+            type[idx].append("NUMBER")
+            type_index[idx].append(j-1)
+            j -= 1
+            continue
+    return type, type_index
+
+def split_list_by_newline(type, idx):
+    result = []
+    sublist = []
+    for item in type[idx]:
+        # sublist.append(item)
+        if item == "\n":
+            result.append(sublist)
+            result.append(["\n"])
+            sublist = []
+        else:
+            sublist.append(item)
+    if sublist:  
+        result.append(sublist)
+    return result
+
+def split_list_by_reference(single_list, nested_list, idx):
+    result = []
+    index = 0
+    for sublist in nested_list:
+        length = len(sublist)
+        result.append(single_list[idx][index:index + length])
+        index += length
+    return result
+
+def kasai(s, suffix_arr):
+    n = len(s)
+    lcp = [0] * n
+    inv_suff = [0] * n
+    for i in range(n):
+        inv_suff[suffix_arr[i]] = i
+    k = 0
+    for i in range(n):
+        if inv_suff[i] == n - 1:
+            k = 0
+            continue
+        j = suffix_arr[inv_suff[i] + 1]
+        while (i + k < n and j + k < n and s[i + k] == s[j + k]):
+            k += 1
+        lcp[inv_suff[i]] = k
+        if k > 0:
+            k -= 1
+    return lcp
+
+def build_suffix_array(s):
+    n = len(s)
+    suffixes = [(s[i:], i) for i in range(n)]
+    suffixes.sort()
+    return [i for _, i in suffixes]
+
+def find_repeated_prefix(s):
+    n = len(s)
+    suffix_arr = build_suffix_array(s)
+    lcp = kasai(s, suffix_arr)
+    for length in range(1, n // 2 + 1):
+        if n % length == 0:
+            index1 = 0
+            index2 = length
+            inv_suff = [0] * n
+            for i in range(n):
+                inv_suff[suffix_arr[i]] = i
+            lcp_value = min(lcp[min(inv_suff[index1], inv_suff[index2]):max(inv_suff[index1], inv_suff[index2])])
+            if lcp_value >= length:
+                return s[:length]
+    return []
