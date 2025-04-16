@@ -1,4 +1,4 @@
-# Rethinking Repetition Problems in Code Generation from Grammar Perspective
+# Rethinking Repetition Problems in Code Generation
 
 ## Caculate TR-N/TR-S
 ```bash
