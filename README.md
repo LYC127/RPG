@@ -1,4 +1,4 @@
-# Rethinking Repetition Problems in Code Generation
+# Rethinking Repetition Problems of LLMs in Code Generation
 
 ## Caculate TR-N/TR-S
 ```bash
