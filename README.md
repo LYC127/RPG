@@ -1,5 +1,5 @@
 # Rethinking Repetition Problems of LLMs in Code Generation
-Accepted as an oral presentation at ACL 2025 main conference (acceptance rate: 2.94%).
+Accepted as an oral presentation at ACL 2025 main conference (Acceptance Rate < 20.5%, Oral Rate < 2.94%).
 
 ## Use of RPG
 Uncomment following lines in [generate_llama.py](./generate_llama.py#L18-L20)
