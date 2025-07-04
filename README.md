@@ -1,21 +1,21 @@
 # Rethinking Repetition Problems of LLMs in Code Generation
 Accepted as an oral presentation at ACL 2025 main conference (Acceptance Rate < 20.5%, Oral Rate < 2.94%).
 
-## Use of RPG
-Uncomment following lines in [generate_llama.py](./generate_llama.py#L18-L20)
-```Python
-# repetition or not
-# GenerationMixin.sample = generation.re_generation_utils.GenerationMixin.sample
-# GenerationMixin.greedy_search = generation.re_generation_utils.GenerationMixin.greedy_search
+## Usage
+```bash
+python generate_code.py \
+  --model_path ./LLMs/CodeLlama-7b-hf/ \
+  --data_path ./datasets/ArtificialSynthesis.jsonl \
+  --save_path ./results/output.jsonl
 ```
-Replace the greedy_search function in generation/utils.py of the transformers library with the [greedy_search](./greedy_search.py) function 
 
-You can create a copy of the utils.py file, replacing only the greedy_search function, name the new file re_generation_utils.py, and place it in the same directory as utils.py
+### Optional Arguments
 
-Use of RPG
-```bash 
-python generate_llama.py
-```
+| Argument        | Description                                    | Default                              |
+|----------------|------------------------------------------------|--------------------------------------|
+| `--model_path`  | Path to the Hugging Face-compatible model      | `./LLMs/CodeLlama-7b-hf/`            |
+| `--data_path`   | Path to the JSONL file with input prompts      | `./datasets/ArtificialSynthesis.jsonl` |
+| `--save_path`   | Path to save the generated outputs             | `./result.jsonl`                     |
 
 ## Metrics
 ### Caculate TR-N/TR-S
