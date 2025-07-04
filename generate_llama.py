@@ -11,13 +11,12 @@ import sys
 from datasets import load_dataset
 
 from transformers import GenerationMixin, generation
-from transformers.generation import re_generation_utils
+from greedy_search import CustomGenerationMixin
 from torch import nn
 import numpy as np
 
 # repetition or not
-# GenerationMixin.sample = generation.re_generation_utils.GenerationMixin.sample
-# GenerationMixin.greedy_search = generation.re_generation_utils.GenerationMixin.greedy_search
+GenerationMixin.greedy_search = CustomGenerationMixin.greedy_search
 
 device = "cuda:0"
 
