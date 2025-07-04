@@ -62,7 +62,8 @@ GenerateNonBeamOutput = Union[GenerateDecoderOnlyOutput, GenerateEncoderDecoderO
 GenerateBeamOutput = Union[GenerateBeamDecoderOnlyOutput, GenerateBeamEncoderDecoderOutput]
 GenerateOutput = Union[GenerateNonBeamOutput, GenerateBeamOutput]
 
-tokenizer = AutoTokenizer.from_pretrained("/home/jiangxue/LLMs/CodeLlama-7b-hf/")
+# Replace with the path to other LLM
+tokenizer = AutoTokenizer.from_pretrained("/home/LLMs/CodeLlama-7b-hf/") 
 
 class CustomGenerationMixin(GenerationMixin):    
     def greedy_search(
