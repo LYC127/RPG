@@ -1,3 +1,70 @@
+from transformers.generation import GenerationMixin
+from transformers import AutoTokenizer
+import re
+
+import copy
+import inspect
+import warnings
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Union
+
+import torch
+import torch.distributed as dist
+from torch import nn
+
+from transformers.generation.logits_process import (
+    EncoderNoRepeatNGramLogitsProcessor,
+    EncoderRepetitionPenaltyLogitsProcessor,
+    EpsilonLogitsWarper,
+    EtaLogitsWarper,
+    ExponentialDecayLengthPenalty,
+    ForcedBOSTokenLogitsProcessor,
+    ForcedEOSTokenLogitsProcessor,
+    ForceTokensLogitsProcessor,
+    HammingDiversityLogitsProcessor,
+    InfNanRemoveLogitsProcessor,
+    LogitNormalization,
+    LogitsProcessorList,
+    MinLengthLogitsProcessor,
+    MinNewTokensLengthLogitsProcessor,
+    NoBadWordsLogitsProcessor,
+    NoRepeatNGramLogitsProcessor,
+    PrefixConstrainedLogitsProcessor,
+    RepetitionPenaltyLogitsProcessor,
+    SequenceBiasLogitsProcessor,
+    SuppressTokensAtBeginLogitsProcessor,
+    SuppressTokensLogitsProcessor,
+    TemperatureLogitsWarper,
+    TopKLogitsWarper,
+    TopPLogitsWarper,
+    TypicalLogitsWarper,
+    UnbatchedClassifierFreeGuidanceLogitsProcessor,
+)
+from transformers.generation.stopping_criteria import (
+    MaxLengthCriteria,
+    MaxTimeCriteria,
+    StoppingCriteria,
+    StoppingCriteriaList,
+    validate_stopping_criteria,
+)
+from transformers.generation import (
+    GenerateDecoderOnlyOutput, 
+    GenerateEncoderDecoderOutput,
+    GenerateBeamDecoderOnlyOutput,
+    GenerateBeamEncoderDecoderOutput,
+)
+if TYPE_CHECKING:
+    from ..modeling_utils import PreTrainedModel
+    from .streamers import BaseStreamer
+
+# Typing shortcuts
+GenerateNonBeamOutput = Union[GenerateDecoderOnlyOutput, GenerateEncoderDecoderOutput]
+GenerateBeamOutput = Union[GenerateBeamDecoderOnlyOutput, GenerateBeamEncoderDecoderOutput]
+GenerateOutput = Union[GenerateNonBeamOutput, GenerateBeamOutput]
+
+tokenizer = AutoTokenizer.from_pretrained("/home/jiangxue/LLMs/CodeLlama-7b-hf/")
+
+class CustomGenerationMixin(GenerationMixin):    
     def greedy_search(
         self,
         input_ids: torch.LongTensor,
