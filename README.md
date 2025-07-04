@@ -4,9 +4,9 @@ Accepted as an oral presentation at ACL 2025 main conference (Acceptance Rate < 
 ## Dataset Structure
 | File Name                         | Scenario                  | # Samples | Description                                      |
 |----------------------------------|---------------------------|-----------|--------------------------------------------------|
-| `ArtificialSynthesis.jsonl`      | Artificial Synthesis      | 512       | Synthetically constructed repetition samples     |
-| `CodeGenerationBenchmarks.jsonl` | Code Generation Benchmarks| 512       | Benchmark-derived LLM repetition cases          |
-| `Real-worldRepositories.jsonl`   | Real-world Repositories   | 1024      | Partial code from open-source projects           |
+| `ArtificialSynthesis.jsonl`      | Artificial Synthesis      | 512       | Each sample consists of a correct code concatenated with its last repetition patterns 5 to 10 times     |
+| `CodeGenerationBenchmarks.jsonl` | Code Generation Benchmarks| 512       | Repetitive codes are selected from the generated repetitive codes of three LLMs on HumanEval and MBPP benchmarks          |
+| `Real-worldRepositories.jsonl`   | Real-world Repositories   | 1024      | Picked from the partial code in real-world repositories           |
 
 ## Usage
 ```bash
