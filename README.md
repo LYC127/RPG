@@ -1,6 +1,13 @@
 # Rethinking Repetition Problems of LLMs in Code Generation
 Accepted as an oral presentation at ACL 2025 main conference (Acceptance Rate < 20.5%, Oral Rate < 2.94%).
 
+## Dataset Structure
+| File Name                         | Scenario                  | # Samples | Description                                      |
+|----------------------------------|---------------------------|-----------|--------------------------------------------------|
+| `ArtificialSynthesis.jsonl`      | Artificial Synthesis      | 512       | Synthetically constructed repetition samples     |
+| `CodeGenerationBenchmarks.jsonl` | Code Generation Benchmarks| 512       | Benchmark-derived LLM repetition cases          |
+| `Real-worldRepositories.jsonl`   | Real-world Repositories   | 1024      | Partial code from open-source projects           |
+
 ## Usage
 ```bash
 python generate_code.py \
