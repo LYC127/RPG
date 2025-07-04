@@ -1,7 +1,7 @@
 # Rethinking Repetition Problems of LLMs in Code Generation
 Accepted as an oral presentation at ACL 2025 main conference (Acceptance Rate < 20.5%, Oral Rate < 2.94%).
 
-## Dataset Structure
+## Dataset Description
 | File Name                         | Scenario                  | # Samples | Description                                      |
 |----------------------------------|---------------------------|-----------|--------------------------------------------------|
 | `ArtificialSynthesis.jsonl`      | Artificial Synthesis      | 512       | Each sample consists of a correct code concatenated with its last repetition patterns 5 to 10 times     |
