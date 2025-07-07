@@ -45,9 +45,12 @@ python metric/ppl.py
 python metric/eos&length&time.py
 ```
 
+## Citation
+```
 @article{dong2025repetition,
   title={Rethinking Repetition Problems of LLMs in Code Generation},
   author={Dong, Yihong and Liu Yuchen and Jiang, Xue and Jin, Zhi and Li, Ge},
   journal={arXiv preprint arXiv:2505.10402},
   year={2025}
 }
+```
